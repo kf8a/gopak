@@ -52,7 +52,7 @@ func TestCalcSigForByte(t *testing.T) {
 }
 
 func TestCalcFor(t *testing.T) {
-	const in, out = "message", 0xbbdc
+	const in, out = "message", 0x1a17
 	if x := CalcSigFor([]byte(in), 0xaaaa); x != out {
 		t.Errorf("CalcSigFor(%x) expected %x got %x", in, out, x)
 	}
