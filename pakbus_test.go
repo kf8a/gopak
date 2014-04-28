@@ -52,8 +52,23 @@ func TestCalcSigForByte(t *testing.T) {
 }
 
 func TestCalcFor(t *testing.T) {
-	const in, out = "message", 0x1a17
-	if x := CalcSigFor([]byte(in), 0xaaaa); x != out {
-		t.Errorf("CalcSigFor(%x) expected %x got %x", in, out, x)
+	var testdata = []struct {
+		in  string
+		out uint16
+	}{
+		{"message", 0x1a17},
+		{"testing", 0x1ef5},
+	}
+	for _, tt := range testdata {
+		if x := CalcSigFor([]byte(tt.in), 0xaaaa); x != tt.out {
+			t.Errorf("CalcSigFor(%x) expected %x got %x", tt.in, tt.out, x)
+		}
 	}
 }
+
+// func TestCalcSigNullifier(t *testing.T) {
+//   const in, out = 0x1a17, 0xb8e9
+//   if x := CalcSigNullifier(in); x != out {
+//     t.Errorf("CalcSigNullifer(%x) expected %x got %x", in, out, x)
+//   }
+// }
