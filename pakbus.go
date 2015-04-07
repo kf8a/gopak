@@ -76,20 +76,24 @@ func CalcSigFor(buffer []byte, seed uint16) uint16 {
 	return sig
 }
 
+func convertNullifierToBuffer(nulb uint16, size int) []byte {
+	buf := new(bytes.Buffer)
+	rbuf := make([]byte, size)
+
+	if err := binary.Write(buf, binary.LittleEndian, nulb); err != nil {
+		log.Fatal("write nulb failed %v", nulb)
+	}
+	if _, err := buf.Read(rbuf); err != nil {
+		log.Fatal("read of nulb to buffer failed")
+	}
+	return rbuf
+}
+
 func CalcSigNullifier(sig uint16) uint16 {
 	var nullif, nulb uint16
 
 	for i := 0; i < 2; i++ {
-		buf := new(bytes.Buffer)
-		rbuf := make([]byte, i)
-
-		if err := binary.Write(buf, binary.LittleEndian, nulb); err != nil {
-			log.Fatal("write nulb failed %v", nulb)
-		}
-		if _, err := buf.Read(rbuf); err != nil {
-			log.Fatal("read of nulb to buffer failed")
-		}
-
+		rbuf := convertNullifierToBuffer(nulb, i)
 		sig := CalcSigFor(rbuf, sig)
 
 		sig2 := (sig << 1) & 0x1FF
