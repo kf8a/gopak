@@ -85,8 +85,16 @@ func TestCalcSigFor(t *testing.T) {
 }
 
 func TestCalcSigNullifier(t *testing.T) {
-	const in, out = 0x1a17, 0xb8e9
-	if x := CalcSigNullifier(in); x != out {
-		t.Errorf("CalcSigNullifer(%x) expected %x got %x", in, out, x)
+	var testdata = []struct {
+		in  uint16
+		out uint16
+	}{
+		{0x1a17, 0xb8e9},
+		{0x23a7, 0x8e59},
+	}
+	for _, tt := range testdata {
+		if x := CalcSigNullifier(tt.in); x != tt.out {
+			t.Errorf("CalcSigNullifer(%x) expected %x got %x", tt.in, tt.out, x)
+		}
 	}
 }

@@ -83,11 +83,11 @@ func CalcSigNullifier(sig uint16) uint16 {
 		buf := new(bytes.Buffer)
 		rbuf := make([]byte, i)
 
-		err := binary.Write(buf, binary.LittleEndian, nulb)
-		_, _ = buf.Read(rbuf)
-
-		if err != nil {
+		if err := binary.Write(buf, binary.LittleEndian, nulb); err != nil {
 			log.Fatal("write nulb failed %v", nulb)
+		}
+		if _, err := buf.Read(rbuf); err != nil {
+			log.Fatal("read of nulb to buffer failed")
 		}
 
 		sig := CalcSigFor(rbuf, sig)
