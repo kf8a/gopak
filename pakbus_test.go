@@ -66,9 +66,27 @@ func TestCalcFor(t *testing.T) {
 	}
 }
 
-// func TestCalcSigNullifier(t *testing.T) {
-//   const in, out = 0x1a17, 0xb8e9
-//   if x := CalcSigNullifier(in); x != out {
-//     t.Errorf("CalcSigNullifer(%x) expected %x got %x", in, out, x)
-//   }
-// }
+func TestCalcSigFor(t *testing.T) {
+	var testdata = []struct {
+		buff string
+		seed uint16
+		out  uint16
+	}{
+		{"", 0x0a, 0x0a},
+		{"", 0x1C, 0x1c},
+		{"", 0x134C, 0x134c},
+	}
+	for _, tt := range testdata {
+		x := CalcSigFor([]byte(tt.buff), tt.seed)
+		if x != tt.out {
+			t.Errorf("CalcSigFor(%x, %x) expected %x got %x", tt.buff, tt.seed, tt.out, x)
+		}
+	}
+}
+
+func TestCalcSigNullifier(t *testing.T) {
+	const in, out = 0x1a17, 0xb8e9
+	if x := CalcSigNullifier(in); x != out {
+		t.Errorf("CalcSigNullifer(%x) expected %x got %x", in, out, x)
+	}
+}
