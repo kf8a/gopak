@@ -90,9 +90,3 @@ func TestCalcSigNullifier(t *testing.T) {
 		t.Errorf("CalcSigNullifer(%x) expected %x got %x", in, out, x)
 	}
 }
-
-func TestEquivalence(t *testing.T) {
-	i := [...]byte{64}
-
-	t.Errorf("expected %#v got %#v", i, i)
-}

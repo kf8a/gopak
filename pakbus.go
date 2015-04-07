@@ -3,7 +3,6 @@ package pakbus
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"log"
 	"strings"
 )
@@ -78,37 +77,30 @@ func CalcSigFor(buffer []byte, seed uint16) uint16 {
 }
 
 func CalcSigNullifier(sig uint16) uint16 {
-	var nullif []uint16
-	var nulb uint16
-	// nulb := make([]uint16, 0)
+	var nullif, nulb uint16
 
 	for i := 0; i < 2; i++ {
-		fmt.Printf("sig %v\n", sig)
 		buf := new(bytes.Buffer)
 		rbuf := make([]byte, i)
 
 		err := binary.Write(buf, binary.LittleEndian, nulb)
 		_, _ = buf.Read(rbuf)
 
-		fmt.Printf("buf %v rbuf %v\n", buf, rbuf)
 		if err != nil {
 			log.Fatal("write nulb failed %v", nulb)
 		}
 
 		sig := CalcSigFor(rbuf, sig)
-		fmt.Printf("sig after calc %v\n", sig)
 
 		sig2 := (sig << 1) & 0x1FF
 		if sig2 >= 0x100 {
 			sig2 += 1
 		}
 
-		// test := (0x100 - (sig2 + (sig >> 8))) & 0xFF
 		nulb = ((0x100 - (sig2 + (sig >> 8))) & 0xFF)
-		fmt.Printf("nulb %+v\n", nulb)
 
-		nullif = append(nullif, nulb)
-		fmt.Printf("nullif: %v\n", nullif)
+		nullif = nullif << 8
+		nullif += nulb
 	}
-	return nullif[1]
+	return nullif
 }
