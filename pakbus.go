@@ -1,6 +1,12 @@
 package pakbus
 
-import "strings"
+import (
+	"bytes"
+	"encoding/binary"
+	"fmt"
+	"log"
+	"strings"
+)
 
 type Packet struct {
 	start_sync byte
@@ -62,24 +68,47 @@ func CalcSigForByte(value byte, seed uint16) uint16 {
 	return (((sig + (seed >> 8) + uint16(value)) & 0xff) | (seed << 8)) & 0xffff
 }
 
-func CalcSigFor(buffer []uint8, seed uint16) uint16 {
+func CalcSigFor(buffer []byte, seed uint16) uint16 {
 	sig := seed
+
 	for _, value := range buffer {
 		sig = CalcSigForByte(value, sig)
 	}
 	return sig
 }
 
-// func CalcSigNullifier(sig uint16) uint16 {
-//   var nulb []byte
-//   var nullif []byte
-//   for i := 0; i < 2; i++ {
-//     sig = CalcSigFor(nulb, sig)
-//     sig2 := (sig<<1) & 0x01ff
-//     if sig2 >= 0x100 {
-//       sig2 += 1
-//     }
-//     nullif[i] = ((0x100 - (sig2 + sig >> 8))) & 0xff
-//   }
-//   return nullif[0]
-// }
+func CalcSigNullifier(sig uint16) uint16 {
+	var nullif []uint16
+	var nulb uint16
+	// nulb := make([]uint16, 0)
+
+	for i := 0; i < 2; i++ {
+		fmt.Printf("sig %v\n", sig)
+		buf := new(bytes.Buffer)
+		rbuf := make([]byte, i)
+
+		err := binary.Write(buf, binary.LittleEndian, nulb)
+		_, _ = buf.Read(rbuf)
+
+		fmt.Printf("buf %v rbuf %v\n", buf, rbuf)
+		if err != nil {
+			log.Fatal("write nulb failed %v", nulb)
+		}
+
+		sig := CalcSigFor(rbuf, sig)
+		fmt.Printf("sig after calc %v\n", sig)
+
+		sig2 := (sig << 1) & 0x1FF
+		if sig2 >= 0x100 {
+			sig2 += 1
+		}
+
+		// test := (0x100 - (sig2 + (sig >> 8))) & 0xFF
+		nulb = ((0x100 - (sig2 + (sig >> 8))) & 0xFF)
+		fmt.Printf("nulb %+v\n", nulb)
+
+		nullif = append(nullif, nulb)
+		fmt.Printf("nullif: %v\n", nullif)
+	}
+	return nullif[1]
+}
