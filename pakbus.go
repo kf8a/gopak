@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"log"
+	"math/big"
 	"strings"
 )
 
@@ -107,4 +108,25 @@ func CalcSigNullifier(sig uint16) uint16 {
 		nullif += nulb
 	}
 	return nullif
+}
+
+type PakbusHdr struct {
+	Dst            int
+	Src            int
+	Protocol       int
+	ExpectMore     int
+	LinkState      int
+	Priority       int
+	HopCnt         int
+	DestPhyAddress int
+	SrcPyAddress   int
+}
+
+func (h *PakbusHdr) Encode() []byte {
+	hdr := new(big.Int)
+	// var hdr uint64
+
+	hdr.SetUint64(123456990812347890)
+
+	return hdr.Bytes()
 }

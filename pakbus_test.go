@@ -98,3 +98,21 @@ func TestCalcSigNullifier(t *testing.T) {
 		}
 	}
 }
+
+func TestEncodeHeader(t *testing.T) {
+	hdr := PakbusHdr{}
+	// dst := 103
+	// src := 4999
+	// protocode := 0
+	out := []byte{0xa0, 0x93, 0x87, 0x00, 0x03, 0x87}
+	network := hdr.Encode()
+	if len(network) != 8 {
+		t.Errorf("Encode should return 8 bytes but returned %x", len(network))
+	} else {
+		for i, _ := range out {
+			if network[i] != out[i] {
+				t.Errorf("Encode() expected %v in postition %x got %v", out[i], i, network[i])
+			}
+		}
+	}
+}
