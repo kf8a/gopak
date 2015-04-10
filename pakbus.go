@@ -124,9 +124,10 @@ type PakbusHdr struct {
 
 func (h *PakbusHdr) Encode() []byte {
 	hdr := new(big.Int)
-	// var hdr uint64
 
-	hdr.SetUint64(123456990812347890)
+	buf := []byte{160, 147, 232, 0, 34, 23, 1, 64}
+	// hdr.SetUint64(123456990812347890)
+	hdr.SetBytes(buf)
 
 	return hdr.Bytes()
 }
