@@ -100,7 +100,10 @@ func TestCalcSigNullifier(t *testing.T) {
 }
 
 func TestEncodeHeader(t *testing.T) {
-	hdr := PakbusHdr{}
+	hdr := PakbusHdr{
+		Dst: 103,
+		Src: 100,
+	}
 	// dst := 103
 	// src := 4999
 	// protocode := 0

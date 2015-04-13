@@ -111,21 +111,32 @@ func CalcSigNullifier(sig uint16) uint16 {
 }
 
 type PakbusHdr struct {
-	Dst            int
-	Src            int
-	Protocol       int
-	ExpectMore     int
-	LinkState      int
-	Priority       int
-	HopCnt         int
-	DestPhyAddress int
-	SrcPyAddress   int
+	Dst            byte
+	Src            byte
+	Protocol       byte
+	ExpectMore     byte
+	LinkState      byte
+	Priority       byte
+	HopCnt         byte
+	DestPhyAddress byte
+	SrcPyAddress   byte
 }
 
 func (h *PakbusHdr) Encode() []byte {
 	hdr := new(big.Int)
 
-	buf := []byte{160, 147, 232, 0, 34, 23, 1, 64}
+	var buf []byte
+	buf = append(buf, h.LinkState) //Sync byte
+	buf = append(buf, h.DestPhyAddress)
+	buf = append(buf, h.ExpectMore)
+	buf = append(buf, h.Priority)
+	buf = append(buf, h.SrcPyAddress)
+	buf = append(buf, h.Protocol)
+	buf = append(buf, h.Dst)
+	buf = append(buf, h.HopCnt)
+	buf = append(buf, h.Src)
+
+	// buf := []byte{160, 147, 232, 0, 34, 23, 1, 64}
 	// hdr.SetUint64(123456990812347890)
 	hdr.SetBytes(buf)
 
