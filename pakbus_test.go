@@ -101,8 +101,14 @@ func TestCalcSigNullifier(t *testing.T) {
 
 func TestEncodeHeader(t *testing.T) {
 	hdr := PakbusHdr{
-		Dst: 103,
-		Src: 100,
+		Dst:            103,
+		Src:            4000,
+		LinkState:      10,
+		HopCount:       0,
+		Priority:       0,
+		ExpectMore:     2,
+		SrcPhyAddress:  4000,
+		DestPhyAddress: 103,
 	}
 	// dst := 103
 	// src := 4999

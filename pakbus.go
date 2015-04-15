@@ -3,8 +3,9 @@ package pakbus
 import (
 	"bytes"
 	"encoding/binary"
+	// "github.com/synful/gopack"
 	"log"
-	"math/big"
+	// "math/big"
 	"strings"
 )
 
@@ -111,34 +112,32 @@ func CalcSigNullifier(sig uint16) uint16 {
 }
 
 type PakbusHdr struct {
-	Dst            byte
-	Src            byte
-	Protocol       byte
-	ExpectMore     byte
-	LinkState      byte
-	Priority       byte
-	HopCnt         byte
-	DestPhyAddress byte
-	SrcPyAddress   byte
+	LinkState      byte   `gopack:"4"`
+	DestPhyAddress uint32 `gopackL"12"`
+	ExpectMore     byte   `gopack:"2"`
+	Priority       byte   `gopack:"2"`
+	SrcPhyAddress  uint32 `gopack:"12"`
+	Protocol       byte   `gopack:"4"`
+	Dst            uint32 `gopack:"12"`
+	HopCount       byte   `gopack:"4"`
+	Src            uint32 `gopack:"12"`
 }
 
-func (h *PakbusHdr) Encode() []byte {
-	hdr := new(big.Int)
+func (h *PakbusHdr) Encode() [8]byte {
+	// hdr := new(big.Int)
 
-	var buf []byte
-	buf = append(buf, h.LinkState) //Sync byte
-	buf = append(buf, h.DestPhyAddress)
-	buf = append(buf, h.ExpectMore)
-	buf = append(buf, h.Priority)
-	buf = append(buf, h.SrcPyAddress)
-	buf = append(buf, h.Protocol)
-	buf = append(buf, h.Dst)
-	buf = append(buf, h.HopCnt)
-	buf = append(buf, h.Src)
+	// var buf = make([]byte, 8)
+
+	// gopack.Pack(buf, h)
+
+	var buf [8]byte
+	buf[0] = h.LinkState << 4
+	buf[1] = h.ExpectMore<<4 + h.Priority
 
 	// buf := []byte{160, 147, 232, 0, 34, 23, 1, 64}
 	// hdr.SetUint64(123456990812347890)
-	hdr.SetBytes(buf)
+	// hdr.SetBytes(buf)
 
-	return hdr.Bytes()
+	// return hdr.Bytes()
+	return buf
 }
