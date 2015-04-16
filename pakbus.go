@@ -112,24 +112,22 @@ func CalcSigNullifier(sig uint16) uint16 {
 }
 
 type PakbusHdr struct {
-	LinkState      byte
-	DestPhyAddress uint16
-	ExpectMore     byte
-	Priority       byte
-	SrcPhyAddress  uint16
-	Protocol       byte
-	Dest           uint16
-	HopCount       byte
-	Src            uint16
+	LinkState  byte
+	ExpectMore byte
+	Priority   byte
+	Protocol   byte
+	Dest       uint16
+	HopCount   byte
+	Src        uint16
 }
 
 func (h *PakbusHdr) Encode() [8]byte {
 	var buf [8]byte
 
-	buf[0] = h.LinkState<<4 | uint8(h.DestPhyAddress>>12)
-	buf[1] = uint8(h.DestPhyAddress)
-	buf[2] = h.ExpectMore<<6 | h.Priority<<4 | uint8(h.SrcPhyAddress>>12)
-	buf[3] = uint8(h.SrcPhyAddress)
+	buf[0] = h.LinkState<<4 | uint8(h.Dest>>12)
+	buf[1] = uint8(h.Dest)
+	buf[2] = h.ExpectMore<<6 | h.Priority<<4 | uint8(h.Src>>12)
+	buf[3] = uint8(h.Src)
 	buf[4] = h.Protocol<<4 | uint8(h.Dest>>12)
 	buf[5] = uint8(h.Dest)
 	buf[6] = h.HopCount<<4 | uint8(h.Src>>12)
