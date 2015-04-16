@@ -101,19 +101,18 @@ func TestCalcSigNullifier(t *testing.T) {
 
 func TestEncodeHeader(t *testing.T) {
 	hdr := PakbusHdr{
-		Dst:            103,
-		Src:            4000,
-		LinkState:      10,
+		Dest:           103,
+		Src:            4500,
+		LinkState:      0xA,
 		HopCount:       0,
-		Priority:       0,
-		ExpectMore:     2,
-		SrcPhyAddress:  4000,
+		Priority:       0x1,
+		Protocol:       0x1,
+		ExpectMore:     0x2,
+		SrcPhyAddress:  4500,
 		DestPhyAddress: 103,
 	}
-	// dst := 103
-	// src := 4999
-	// protocode := 0
-	out := []byte{0xa0, 0x93, 0x87, 0x00, 0x03, 0x87}
+	out := []byte{160, 103, 145, 148, 16, 103, 1, 148}
+	// '160:103:145:148:016:103:001:148'
 	network := hdr.Encode()
 	if len(network) != 8 {
 		t.Errorf("Encode should return 8 bytes but returned %x", len(network))

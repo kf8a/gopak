@@ -3,7 +3,6 @@ package pakbus
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	// "github.com/synful/gopack"
 	"log"
 	// "math/big"
@@ -113,38 +112,28 @@ func CalcSigNullifier(sig uint16) uint16 {
 }
 
 type PakbusHdr struct {
-	LinkState      byte   `gopack:"4"`
-	DestPhyAddress uint64 `gopackL"12"`
-	ExpectMore     byte   `gopack:"2"`
-	Priority       byte   `gopack:"2"`
-	SrcPhyAddress  uint64 `gopack:"12"`
-	Protocol       byte   `gopack:"4"`
-	Dst            uint64 `gopack:"12"`
-	HopCount       byte   `gopack:"4"`
-	Src            uint64 `gopack:"12"`
+	LinkState      byte
+	DestPhyAddress uint16
+	ExpectMore     byte
+	Priority       byte
+	SrcPhyAddress  uint16
+	Protocol       byte
+	Dest           uint16
+	HopCount       byte
+	Src            uint16
 }
 
 func (h *PakbusHdr) Encode() [8]byte {
-	// hdr := new(big.Int)
-
-	// var buf = make([]byte, 8)
-
-	// gopack.Pack(buf, h)
-
 	var buf [8]byte
 
-	var address = make([]byte, 4)
-	binary.PutUvarint(address, h.DestPhyAddress)
-	fmt.Print(address)
-	buf[0] = h.LinkState<<4 + address[0]
-	buf[2] = address[1]
+	buf[0] = h.LinkState<<4 | uint8(h.DestPhyAddress>>12)
+	buf[1] = uint8(h.DestPhyAddress)
+	buf[2] = h.ExpectMore<<6 | h.Priority<<4 | uint8(h.SrcPhyAddress>>12)
+	buf[3] = uint8(h.SrcPhyAddress)
+	buf[4] = h.Protocol<<4 | uint8(h.Dest>>12)
+	buf[5] = uint8(h.Dest)
+	buf[6] = h.HopCount<<4 | uint8(h.Src>>12)
+	buf[7] = uint8(h.Src)
 
-	buf[2] = h.ExpectMore<<4 + h.Priority
-
-	// buf := []byte{160, 147, 232, 0, 34, 23, 1, 64}
-	// hdr.SetUint64(123456990812347890)
-	// hdr.SetBytes(buf)
-
-	// return hdr.Bytes()
 	return buf
 }
