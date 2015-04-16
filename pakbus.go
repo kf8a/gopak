@@ -3,6 +3,7 @@ package pakbus
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	// "github.com/synful/gopack"
 	"log"
 	// "math/big"
@@ -113,14 +114,14 @@ func CalcSigNullifier(sig uint16) uint16 {
 
 type PakbusHdr struct {
 	LinkState      byte   `gopack:"4"`
-	DestPhyAddress uint32 `gopackL"12"`
+	DestPhyAddress uint64 `gopackL"12"`
 	ExpectMore     byte   `gopack:"2"`
 	Priority       byte   `gopack:"2"`
-	SrcPhyAddress  uint32 `gopack:"12"`
+	SrcPhyAddress  uint64 `gopack:"12"`
 	Protocol       byte   `gopack:"4"`
-	Dst            uint32 `gopack:"12"`
+	Dst            uint64 `gopack:"12"`
 	HopCount       byte   `gopack:"4"`
-	Src            uint32 `gopack:"12"`
+	Src            uint64 `gopack:"12"`
 }
 
 func (h *PakbusHdr) Encode() [8]byte {
@@ -131,8 +132,14 @@ func (h *PakbusHdr) Encode() [8]byte {
 	// gopack.Pack(buf, h)
 
 	var buf [8]byte
-	buf[0] = h.LinkState << 4
-	buf[1] = h.ExpectMore<<4 + h.Priority
+
+	var address = make([]byte, 4)
+	binary.PutUvarint(address, h.DestPhyAddress)
+	fmt.Print(address)
+	buf[0] = h.LinkState<<4 + address[0]
+	buf[2] = address[1]
+
+	buf[2] = h.ExpectMore<<4 + h.Priority
 
 	// buf := []byte{160, 147, 232, 0, 34, 23, 1, 64}
 	// hdr.SetUint64(123456990812347890)
