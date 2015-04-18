@@ -111,6 +111,27 @@ func CalcSigNullifier(sig uint16) uint16 {
 	return nullif
 }
 
+type SerPkt struct {
+	LinkState  byte
+	ExpectMore byte
+	Priority   byte
+	Dest       uint16
+	Src        uint16
+}
+
+func (s *SerPkt) Encode() [4]byte {
+	var buf [4]byte
+
+	buf[0] = s.LinkState<<4 | uint8(s.Dest>>12)
+	buf[1] = uint8(s.Dest)
+	buf[2] = s.ExpectMore<<6 | s.Priority<<4 | uint8(s.Src>>12)
+	buf[3] = uint8(s.Src)
+	return buf
+}
+
+// func (s *SerPkt) Decode([4]byte) SerPkt {
+// }
+
 type PakbusHdr struct {
 	LinkState  byte
 	ExpectMore byte

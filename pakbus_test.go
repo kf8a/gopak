@@ -99,6 +99,27 @@ func TestCalcSigNullifier(t *testing.T) {
 	}
 }
 
+func TestSerPkt(t *testing.T) {
+	pkt := SerPkt{
+		Dest:       103,
+		Src:        4500,
+		LinkState:  0xA,
+		Priority:   0x1,
+		ExpectMore: 0x2,
+	}
+	out := []byte{160, 103, 145, 148}
+	network := pkt.Encode()
+	if len(network) != 4 {
+		t.Errorf("Encode should return 8 bytes but returned %x", len(network))
+	} else {
+		for i, _ := range out {
+			if network[i] != out[i] {
+				t.Errorf("Encode() expected %v in postition %x got %v", out[i], i, network[i])
+			}
+		}
+	}
+}
+
 func TestEncodeHeader(t *testing.T) {
 	hdr := PakbusHdr{
 		Dest:       103,
