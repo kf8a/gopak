@@ -131,6 +131,23 @@ func (s *SerPkt) Encode() [4]byte {
 
 // func (s *SerPkt) Decode([4]byte) SerPkt {
 // }
+type HelloCmd struct {
+	TranNumber     byte
+	IsRouter       byte
+	HopMetric      byte
+	VerifyInterval uint16
+}
+
+func (h *HelloCmd) Encode() [6]byte {
+	var buf [6]byte
+
+	buf[0] = 0x09
+	buf[1] = h.TranNumber
+	buf[2] = h.IsRouter
+	buf[3] = h.HopMetric
+	buf[4] = uint8(h.VerifyInterval >> 8)
+	buff[5] = uint8(h.VerifyInterval)
+}
 
 type PakbusHdr struct {
 	LinkState  byte
