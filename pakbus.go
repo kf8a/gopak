@@ -146,7 +146,9 @@ func (h *HelloCmd) Encode() [6]byte {
 	buf[2] = h.IsRouter
 	buf[3] = h.HopMetric
 	buf[4] = uint8(h.VerifyInterval >> 8)
-	buff[5] = uint8(h.VerifyInterval)
+	buf[5] = uint8(h.VerifyInterval)
+
+	return buf
 }
 
 type PakbusHdr struct {
